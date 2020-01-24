@@ -41,17 +41,20 @@ const MaskOverride = React.forwardRef<MaskedInputPropsT, HTMLElement>(
         disabled={disabled}
         {...restProps}
       >
-        {props => (
-          <StyledInput
-            ref={ref}
-            onChange={onChange}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            value={value}
-            disabled={disabled}
-            {...props}
-          />
-        )}
+        {props => {
+          console.log('PROPS FROM MASKED INPUT', props);
+          return (
+            <StyledInput
+              ref={ref}
+              onChange={onChange}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              value={value}
+              disabled={disabled}
+              {...props}
+            />
+          );
+        }}
       </InputMask>
     );
   },
@@ -71,9 +74,12 @@ export default function MaskedInput({
         maskChar,
         ...(inputOverride.props || {}),
       },
-      style: {
-        ...(inputOverride.style || {}),
-      },
+      style:
+        typeof inputOverride.style === 'function'
+          ? inputOverride.style
+          : {
+              ...(inputOverride.style || {}),
+            },
     },
     ...restOverrides,
   };

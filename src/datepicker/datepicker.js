@@ -21,6 +21,7 @@ import type {DatepickerPropsT} from './types.js';
 export default class Datepicker extends React.Component<
   DatepickerPropsT,
   {
+    anyHover: boolean,
     calendarFocused: boolean,
     isOpen: boolean,
     isPseudoFocused: boolean,
@@ -37,6 +38,7 @@ export default class Datepicker extends React.Component<
   calendar: ?HTMLElement;
 
   state = {
+    anyHover: true,
     calendarFocused: false,
     isOpen: false,
     isPseudoFocused: false,
@@ -221,6 +223,12 @@ export default class Datepicker extends React.Component<
     }
   }
 
+  setAnyHover = (val: boolean): null => {
+    console.log('ANY HOVER IS SET to', val);
+    this.setState({anyHover: val});
+    return null;
+  };
+
   render() {
     const {overrides = {}} = this.props;
     const [InputComponent, inputProps] = getOverrides(
@@ -284,6 +292,28 @@ export default class Datepicker extends React.Component<
                   mask={this.getMask()}
                   required={this.props.required}
                   clearable={this.props.clearable}
+                  overrides={{
+                    Input: {
+                      style: () => {
+                        console.log('OVERRIDE STYLE IS CALLED');
+                        return {
+                          '@media (any-hover: none)': {
+                            opacity: !this.state.anyHover
+                              ? null
+                              : this.setAnyHover(false),
+                          },
+                          '@media (any-hover: hover)': {
+                            opacity: this.state.anyHover
+                              ? null
+                              : this.setAnyHover(true),
+                          },
+                        };
+                      },
+                      props: {
+                        readonly: !this.state.anyHover ? 'readonly' : null,
+                      },
+                    },
+                  }}
                   {...inputProps}
                 />
               </InputWrapper>
